@@ -88,11 +88,14 @@
 //
 // Heaters / Fans
 //
-#define HEATER_0_PIN       PC3   // HEATER1
-#define HEATER_1_PIN       PB0   // HEATER2
-#define HEATER_BED_PIN     PA0   // HOT BED
-
-#define FAN_PIN            PB1   // FAN
+#define HEATER_0_PIN       PC3
+#if HOTENDS == 1
+  #define FAN1_PIN         PB0
+#else
+  #define HEATER_1_PIN     PB0
+#endif
+#define FAN_PIN            PB1
+#define HEATER_BED_PIN     PA0
 
 //
 // Thermocouples
@@ -112,8 +115,17 @@
 // LCD / Controller
 //
 #define BEEPER_PIN         PC5
-#define SD_DETECT_PIN      PD12
 
+//
+// Use the on-board card socket labeled TF_CARD_SOCKET
+//
+#define SS_PIN           PC11
+#define SCK_PIN          PC12
+#define MOSI_PIN         PD2
+#define MISO_PIN         PC8
+#define SD_DETECT_PIN    PD12
+#define SDSS             SS_PIN
+#define SDIO_SUPPORT
 /**
  * Note: MKS Robin TFT screens use various TFT controllers.
  * If the screen stays white, disable 'LCD_RESET_PIN'
@@ -123,12 +135,26 @@
   #define FSMC_CS_PIN        PD7    // NE4
   #define FSMC_RS_PIN        PD11   // A0
 
-  #define LCD_RESET_PIN      PF6
+  #define LCD_RESET_PIN      PF6    // PC6?
   #define NO_LCD_REINIT             // Suppress LCD re-initialization
 
   #define LCD_BACKLIGHT_PIN  PD13
 
   #if ENABLED(TOUCH_BUTTONS)
     #define TOUCH_CS_PIN     PA7
+    #define TOUCH_SCK_PIN    PB13  // pin 52
+    #define TOUCH_MOSI_PIN   PB15  // PB14  // pin 53
+    #define TOUCH_MISO_PIN   PB14  // PB15  // pin 54
+    //#define TOUCH_INT_PIN  PC6   // pin 63 (PenIRQ coming from ADS7843)
+
+    #define LCD_USE_DMA_FSMC   // Use DMA transfers to send data to the TFT
+    #define FSMC_DMA_DEV     DMA2
+    #define FSMC_DMA_CHANNEL DMA_CH5
+    #define BTN_EN1          -1    // Real pin is needed to enable encoder's push button
+    #define BTN_EN2          -1    // functionality used by touch screen
+
+    #define DOGLCD_MOSI      -1  // Prevent auto-define by Conditionals_post.h
+    #define DOGLCD_SCK       -1
+
   #endif
 #endif
